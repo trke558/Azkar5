@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8" />
+  <title>صفحة ذكر الله</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      direction: rtl;
+      padding: 30px;
+      background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+      color: #003366;
+      min-height: 100vh;
+      margin: 0;
+    }
+    h1 {
+      color: #002244;
+      margin-bottom: 40px;
+      text-shadow: 1px 1px 3px #a1c4fd;
+    }
+    .dhikr-box {
+      background: rgba(255, 255, 255, 0.85);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 30px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .dhikr-text {
+      font-size: 1.8em;
+      margin-bottom: 15px;
+      color: #004080;
+      text-shadow: 1px 1px 4px #c2e9fb;
+    }
+    .counter {
+      font-size: 1.3em;
+      margin-bottom: 15px;
+      color: #002244;
+      font-weight: bold;
+      text-shadow: 1px 1px 3px #a1c4fd;
+    }
+    button {
+      font-size: 1.1em;
+      padding: 10px 25px;
+      background-color: #005f99;
+      border: none;
+      color: white;
+      cursor: pointer;
+      border-radius: 25px;
+      box-shadow: 0 4px 8px rgba(0, 95, 153, 0.4);
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #004470;
+      box-shadow: 0 6px 12px rgba(0, 68, 112, 0.6);
+    }
+  </style>
+</head>
+<body>
+
+  <h1>أذكار الله</h1>
+
+  <div id="dhikr-container"></div>
+
+  <script>
+    const dhikrList = [
+      "سبحان الله وبحمده",
+      "سبحان الله العظيم",
+      "سبحان الله والحمدلله ولا إله إلا الله والله أكبر"
+    ];
+
+    const maxCount = 100;
+    const counts = Array(dhikrList.length).fill(0);
+
+    // إنشاء واجهة لكل ذكر
+    const container = document.getElementById('dhikr-container');
+
+    dhikrList.forEach((text, index) => {
+      // إنشاء العناصر
+      const box = document.createElement('div');
+      box.classList.add('dhikr-box');
+
+      const dhikrText = document.createElement('div');
+      dhikrText.classList.add('dhikr-text');
+      dhikrText.textContent = text;
+
+      const counter = document.createElement('div');
+      counter.classList.add('counter');
+      counter.textContent = `عدد التكرار: 0`;
+
+      const button = document.createElement('button');
+      button.textContent = "ذكر";
+
+      // عند الضغط على زر الذكر
+      button.addEventListener('click', () => {
+        playSound();
+
+        counts[index]++;
+        if (counts[index] > maxCount) {
+          counts[index] = 1; // إعادة العداد إلى 1 بعد 100
+        }
+        counter.textContent = `عدد التكرار: ${counts[index]}`;
+      });
+
+      box.appendChild(dhikrText);
+      box.appendChild(counter);
+      box.appendChild(button);
+
+      container.appendChild(box);
+    });
+
+    // صوت ترديد بسيط (تكبير)
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+    function playSound() {
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+
+      oscillator.type = 'sine';
+      oscillator.frequency.setValueAtTime(600, audioContext.currentTime);
+
+      gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+
+      oscillator.start();
+      oscillator.stop(audioContext.currentTime + 0.1);
+    }
+  </script>
+
+</body>
+</html>
